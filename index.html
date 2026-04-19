@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskSync | IWD Project Website</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --ts-pri: #3a6b8a;
+        --ts-acc: #4a9ece;
+        --ts-nav1: #1b2a3d;
+        --ts-nav2: #243447;
+        --ts-foot: #1b2a3d;
+      }
+      [data-bs-theme="dark"] {
+        --ts-pri: #6eadd4;
+        --ts-acc: #7fc1e3;
+        --ts-nav1: #0d1117;
+        --ts-nav2: #161b22;
+        --ts-foot: #0d1117;
+        --bs-body-bg: #0d1117;
+        --bs-body-color: #c9d1d9;
+        --bs-table-bg: #161b22;
+        --bs-table-hover-bg: #1c232d;
+        --bs-border-color: #21262d;
+      }
+
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        transition:
+          background 0.35s,
+          color 0.35s;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .navbar {
+        background: linear-gradient(
+          135deg,
+          var(--ts-nav1),
+          var(--ts-nav2)
+        ) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        flex-shrink: 0;
+        z-index: 100;
+      }
+      .navbar-brand {
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        font-size: 1.25rem;
+      }
+      .brand-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--ts-acc);
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      .main-area {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem 0;
+      }
+
+      .form-control:focus {
+        border-color: var(--ts-acc);
+        box-shadow: 0 0 0 0.2rem rgba(74, 158, 206, 0.2);
+      }
+      .btn-add {
+        background: var(--ts-pri);
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-add:hover {
+        background: var(--ts-acc);
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(74, 158, 206, 0.3);
+      }
+
+      .card-wrap {
+        background: var(--bs-body-bg);
+        border: 1px solid var(--bs-border-color, rgba(0, 0, 0, 0.08));
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+        transition: all 0.35s;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 0;
+      }
+
+      .input-row {
+        flex-shrink: 0;
+        margin-bottom: 0.75rem;
+      }
+
+      .table-scroll-area {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: auto;
+        min-height: 0;
+        border-radius: 0 0 0.5rem 0.5rem;
+      }
+      .table-scroll-area::-webkit-scrollbar {
+        width: 6px;
+      }
+      .table-scroll-area::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .table-scroll-area::-webkit-scrollbar-thumb {
+        background: rgba(128, 128, 128, 0.3);
+        border-radius: 3px;
+      }
+      .table-scroll-area::-webkit-scrollbar-thumb:hover {
+        background: rgba(128, 128, 128, 0.5);
+      }
+
+      .table {
+        font-size: 0.9rem;
+        margin-bottom: 0;
+      }
+      .table thead {
+        background: var(--ts-nav2);
+        color: #e6edf3;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      [data-bs-theme="light"] .table thead {
+        background: #2c3e50;
+        color: #ecf0f1;
+      }
+      .table thead th {
+        border: none;
+        padding: 0.7rem 0.75rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .sort-btn {
+        cursor: pointer;
+        user-select: none;
+        background: none;
+        border: none;
+        color: inherit;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0;
+      }
+      .sort-btn:hover {
+        color: var(--ts-acc);
+      }
+      .sort-arrows {
+        display: inline-flex;
+        flex-direction: column;
+        line-height: 0;
+        gap: 1px;
+        font-size: 0.6rem;
+      }
+      .sort-arrows i {
+        opacity: 0.3;
+        transition: all 0.2s;
+      }
+      .sort-arrows i.on {
+        opacity: 1;
+        color: var(--ts-acc);
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+      .dot-gray {
+        background: #8b949e;
+      }
+      .dot-orange {
+        background: #d29922;
+      }
+      .dot-green {
+        background: #3fb950;
+      }
+      .status-sel {
+        font-size: 0.82rem;
+        padding: 2px 6px;
+        border-radius: 6px;
+        min-width: 125px;
+        cursor: pointer;
+      }
+
+      .btn-del {
+        background: transparent;
+        border: 1px solid transparent;
+        color: #da3633;
+        font-size: 1rem;
+        padding: 4px 10px;
+        border-radius: 6px;
+        transition: all 0.2s;
+        line-height: 1;
+      }
+      .btn-del:hover {
+        background: rgba(218, 54, 51, 0.08);
+        border-color: rgba(218, 54, 51, 0.3);
+      }
+      [data-bs-theme="dark"] .btn-del:hover {
+        background: rgba(218, 54, 51, 0.12);
+      }
+
+      .modal-del .modal-content {
+        border: none;
+        border-radius: 0.75rem;
+        overflow: hidden;
+      }
+      .modal-del .modal-header {
+        background: linear-gradient(135deg, #b91c1c, #dc2626);
+        color: #fff;
+        border: none;
+        padding: 0.9rem 1.2rem;
+      }
+      .modal-del .modal-body {
+        padding: 1.5rem 1.2rem;
+      }
+      .modal-del .modal-footer {
+        border: none;
+        padding: 0.5rem 1.2rem 1rem;
+      }
+
+      .modal-dev .modal-content {
+        border: none;
+        border-radius: 0.75rem;
+        overflow: hidden;
+      }
+      .modal-dev .modal-header {
+        background: linear-gradient(135deg, var(--ts-pri), var(--ts-acc));
+        border: none;
+      }
+      .modal-dev .badge {
+        font-size: 0.75rem;
+      }
+
+      .empty-msg {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #8b949e;
+      }
+      .empty-msg i {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        opacity: 0.5;
+      }
+
+      .theme-sw {
+        position: relative;
+        width: 44px;
+        height: 24px;
+        flex-shrink: 0;
+      }
+      .theme-sw input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .theme-track {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: #4a9ece;
+        border-radius: 24px;
+        transition: 0.3s;
+      }
+      .theme-track::before {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        left: 3px;
+        bottom: 3px;
+        background: #fff;
+        border-radius: 50%;
+        transition: 0.3s;
+      }
+      .theme-sw input:checked + .theme-track {
+        background: #30363d;
+      }
+      .theme-sw input:checked + .theme-track::before {
+        transform: translateX(20px);
+      }
+      .theme-icons {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #ecf0f1;
+        font-size: 0.82rem;
+      }
+
+      .sr-cell {
+        font-weight: 600;
+        color: var(--ts-acc);
+        font-size: 0.85rem;
+      }
+
+      .row-enter {
+        animation: rowIn 0.3s ease;
+      }
+      @keyframes rowIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .site-footer {
+        flex-shrink: 0;
+        background: linear-gradient(135deg, var(--ts-foot), var(--ts-nav2));
+        color: #8b949e;
+        padding: 0.6rem 0;
+        font-size: 0.8rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        z-index: 100;
+      }
+      .site-footer a {
+        color: var(--ts-acc);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .site-footer a:hover {
+        text-decoration: underline;
+        color: #7fc1e3;
+      }
+
+      @media (max-width: 576px) {
+        .card-wrap {
+          padding: 0.75rem;
+        }
+        .status-sel {
+          min-width: 105px;
+          font-size: 0.76rem;
+        }
+        .table {
+          font-size: 0.82rem;
+        }
+        th,
+        td {
+          padding: 0.45rem 0.4rem !important;
+        }
+        .site-footer {
+          font-size: 0.72rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand navbar-dark px-3 shadow-sm">
+      <div class="container-fluid px-0">
+        <a
+          class="navbar-brand d-flex align-items-center gap-2"
+          href="index.html"
+        >
+          <i class="bi bi-arrow-repeat" style="color: var(--ts-acc)"></i
+          >TaskSync<span class="brand-dot ms-1"></span>
+        </a>
+        <ul class="navbar-nav ms-auto align-items-center gap-2 gap-sm-3">
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-1"
+              href="https://github.com"
+              target="_blank"
+              rel="noopener"
+              ><i class="bi bi-github"></i
+              ><span class="d-none d-sm-inline">GitHub</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <div class="theme-icons">
+              <i class="bi bi-sun-fill"></i>
+              <label class="theme-sw"
+                ><input type="checkbox" id="themeToggle" /><span
+                  class="theme-track"
+                ></span
+              ></label>
+              <i class="bi bi-moon-fill"></i>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="main-area">
+      <div class="container h-100 d-flex flex-column" style="max-width: 840px">
+        <div class="card-wrap">
+          <div class="input-row">
+            <form action="api.php" method="POST" class="d-flex gap-2">
+              <input type="hidden" name="action" value="add" />
+              <input
+                type="text"
+                name="title"
+                class="form-control"
+                placeholder="Enter a new task..."
+                required
+                maxlength="255"
+                autocomplete="off"
+              />
+              <button
+                type="submit"
+                class="btn btn-add d-flex align-items-center gap-1 px-3 text-nowrap"
+              >
+                <i class="bi bi-plus-lg"></i
+                ><span class="d-none d-sm-inline">Add</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="table-scroll-area">
+            <table class="table table-hover align-middle" id="tbl">
+              <thead>
+                <tr>
+                  <th style="width: 72px">
+                    <button class="sort-btn" data-col="sr_no">
+                      Sr.No
+                      <span class="sort-arrows"
+                        ><i class="bi bi-caret-up-fill"></i
+                        ><i class="bi bi-caret-down-fill"></i
+                      ></span>
+                    </button>
+                  </th>
+                  <th>
+                    <button class="sort-btn" data-col="title">
+                      Title
+                      <span class="sort-arrows"
+                        ><i class="bi bi-caret-up-fill"></i
+                        ><i class="bi bi-caret-down-fill"></i
+                      ></span>
+                    </button>
+                  </th>
+                  <th style="width: 155px">
+                    <button class="sort-btn" data-col="status">
+                      Status
+                      <span class="sort-arrows"
+                        ><i class="bi bi-caret-up-fill"></i
+                        ><i class="bi bi-caret-down-fill"></i
+                      ></span>
+                    </button>
+                  </th>
+                  <th style="width: 175px" class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+            <div id="empty" class="empty-msg d-none">
+              <i class="bi bi-inbox"></i>
+              <p class="mb-0">No tasks saved!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container text-center">
+        <i class="bi bi-c-circle"></i> 2026 TaskSync — Developed by
+        <a href="#" data-bs-toggle="modal" data-bs-target="#devModal"
+          >Shivam M. Pandya</a
+        >
+      </div>
+    </footer>
+
+    <!-- Delete Modal -->
+    <div class="modal fade modal-del" id="delModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header py-2">
+            <h6 class="modal-title d-flex align-items-center gap-2 mb-0">
+              <i class="bi bi-exclamation-triangle-fill"></i>Delete Task
+            </h6>
+            <button
+              type="button"
+              class="btn-close btn-close-white btn-sm"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <p class="mb-1 fw-medium">Are you sure you want to delete</p>
+            <p class="mb-1"><strong id="delTitle"></strong></p>
+            <small class="text-body-secondary"
+              >This action cannot be undone.</small
+            >
+          </div>
+          <div class="modal-footer justify-content-center pt-0">
+            <button
+              class="btn btn-sm btn-secondary px-3"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button class="btn btn-sm btn-danger px-3" id="delConfirm">
+              <i class="bi bi-trash3 me-1"></i>Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Developer Modal -->
+    <div class="modal fade modal-dev" id="devModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header text-white">
+            <h5 class="modal-title">
+              <i class="fas fa-user-tie"></i> Developer Information
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="mb-3">
+              <img
+                src="./assets/images/Shivam_Pandya.png"
+                alt="Developer"
+                class="img-fluid rounded-circle border border-3 border-primary"
+                style="max-width: 180px"
+                onerror="
+                  this.src =
+                    'https://ui-avatars.com/api/?name=SP&background=4a9ece&color=fff&size=180'
+                "
+              />
+            </div>
+            <h4 class="text-primary">Thanks For Visiting!</h4>
+            <h5 class="mt-3">Shivam M. Pandya</h5>
+            <p class="text-muted">[246090307077]</p>
+            <p class="mb-0">
+              Student, Diploma in Computer Engineering Department
+            </p>
+            <p class="text-muted">
+              C. U Shah Govt. Polytechnic - Surendranagar
+            </p>
+            <div class="mt-3">
+              <span class="badge bg-success me-1">HTML</span>
+              <span class="badge bg-info me-1">CSS</span>
+              <span class="badge bg-warning me-1">JavaScript</span>
+              <span class="badge bg-primary me-1">Bootstrap</span>
+              <span class="badge bg-dark me-1">mySQL</span>
+              <span class="badge bg-secondary">PHP</span>
+            </div>
+            <div class="mt-3">
+              <a
+                href="https://shivampandya.framer.website"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-outline-primary btn-sm"
+              >
+                <i class="fas fa-globe"></i> Visit Portfolio
+              </a>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <p class="text-muted small mb-0">
+              <i class="fas fa-copyright"></i> 2026 MIT License | IWD Submission
+              Website
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      (() => {
+        const html = document.documentElement,
+          tog = document.getElementById("themeToggle"),
+          tbody = document.getElementById("tbody"),
+          empty = document.getElementById("empty"),
+          delModal = new bootstrap.Modal(document.getElementById("delModal")),
+          delTitle = document.getElementById("delTitle"),
+          delBtn = document.getElementById("delConfirm");
+        let delId = null,
+          sCol = "sr_no",
+          sCycle = 0;
+
+        const setTheme = (d) => {
+          html.setAttribute("data-bs-theme", d ? "dark" : "light");
+          tog.checked = d;
+          localStorage.setItem("ts-theme", d ? "dark" : "light");
+        };
+        const sv = localStorage.getItem("ts-theme");
+        sv
+          ? setTheme(sv === "dark")
+          : setTheme(window.matchMedia("(prefers-color-scheme:dark)").matches);
+        tog.addEventListener("change", () => setTheme(tog.checked));
+        window
+          .matchMedia("(prefers-color-scheme:dark)")
+          .addEventListener("change", (e) => {
+            if (!localStorage.getItem("ts-theme")) setTheme(e.matches);
+          });
+
+        const esc = (t) => {
+          const d = document.createElement("div");
+          d.textContent = t;
+          return d.innerHTML;
+        };
+        const SM = {
+          not_started: { l: "Not started", c: "dot-gray" },
+          pending: { l: "Pending", c: "dot-orange" },
+          completed: { l: "Completed", c: "dot-green" },
+        };
+        const opt = (v, sel) =>
+          `<option value="${v}"${v === sel ? " selected" : ""}>${SM[v].l}</option>`;
+
+        function load() {
+          const dir = sCycle === 2 ? "DESC" : "ASC";
+          fetch(`api.php?action=fetch&sort=${sCol}&dir=${dir}`)
+            .then((r) => r.json())
+            .then((data) => {
+              if (!data.length) {
+                tbody.innerHTML = "";
+                empty.classList.remove("d-none");
+                return;
+              }
+              empty.classList.add("d-none");
+              tbody.innerHTML = data
+                .map(
+                  (t, i) => `<tr class="row-enter">
+<td class="text-center sr-cell">${i + 1}</td>
+<td>${esc(t.title)}</td>
+<td><div class="d-flex align-items-center"><span class="dot ${SM[t.status].c}" id="d${t.id}"></span>
+<select class="form-select form-select-sm status-sel" data-id="${t.id}">${opt("not_started", t.status)}${opt("pending", t.status)}${opt("completed", t.status)}</select></div></td>
+<td class="text-center"><button class="btn-del" title="Delete" data-id="${t.id}" data-title="${esc(t.title)}"><i class="bi bi-trash3-fill"></i></button></td>
+</tr>`,
+                )
+                .join("");
+            });
+        }
+
+        document.querySelectorAll(".sort-btn").forEach((b) => {
+          b.addEventListener("click", () => {
+            const c = b.dataset.col;
+            sCol === c
+              ? (sCycle = (sCycle + 1) % 3)
+              : ((sCol = c), (sCycle = 1));
+            document.querySelectorAll(".sort-btn").forEach((x) => {
+              const a = x.querySelectorAll(".sort-arrows i");
+              a[0].classList.remove("on");
+              a[1].classList.remove("on");
+            });
+            const ar = b.querySelectorAll(".sort-arrows i");
+            if (sCycle === 1) ar[0].classList.add("on");
+            else if (sCycle === 2) ar[1].classList.add("on");
+            load();
+          });
+        });
+
+        tbody.addEventListener("change", (e) => {
+          if (!e.target.classList.contains("status-sel")) return;
+          const id = e.target.dataset.id,
+            s = e.target.value;
+          document.getElementById("d" + id).className = "dot " + SM[s].c;
+          const fd = new FormData();
+          fd.append("action", "update_status");
+          fd.append("id", id);
+          fd.append("status", s);
+          fetch("api.php", { method: "POST", body: fd });
+        });
+
+        tbody.addEventListener("click", (e) => {
+          const b = e.target.closest(".btn-del");
+          if (!b) return;
+          delId = b.dataset.id;
+          delTitle.textContent = `"${b.dataset.title}"`;
+          delModal.show();
+        });
+        delBtn.addEventListener("click", () => {
+          if (!delId) return;
+          const fd = new FormData();
+          fd.append("action", "delete");
+          fd.append("id", delId);
+          fetch("api.php", { method: "POST", body: fd })
+            .then((r) => r.json())
+            .then(() => {
+              delId = null;
+              delModal.hide();
+              sCol = "sr_no";
+              sCycle = 0;
+              document.querySelectorAll(".sort-btn").forEach((x) => {
+                const a = x.querySelectorAll(".sort-arrows i");
+                a[0].classList.remove("on");
+                a[1].classList.remove("on");
+              });
+              load();
+            });
+        });
+
+        load();
+      })();
+    </script>
+  </body>
+</html>
